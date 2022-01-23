@@ -273,36 +273,36 @@ class GameScene extends Phaser.Scene {
       // LOADING IMAGES
       // -------------
       // Regular tiles; square
-      this.load.image('emotion', 'assets/Heart.png');
-      this.load.image('physical', 'assets/Arm.png');
-      this.load.image('mental', 'assets/Brain.png');
+      this.load.image('emotion', './Heart.png');
+      this.load.image('physical', './Arm.png');
+      this.load.image('mental', './Brain.png');
 
       // Goal tiles; square
-      this.load.image('emotion_goal', 'assets/EmotionGoal.png')
-      this.load.image('physical_goal', 'assets/PhysicalGoal.png')
-      this.load.image('mental_goal', 'assets/MentalGoal')
+      this.load.image('emotion_goal', './EmotionGoal.png')
+      this.load.image('physical_goal', './PhysicalGoal.png')
+      this.load.image('mental_goal', './MentalGoal')
 
 
       // Power up tiles; square
-      this.load.image('rainbow_tile', 'assets/RainbowTile.png') // Change colors
-      this.load.image('nap_tile', 'assets/NapTile.png') // Gain a spoon; any color
+      this.load.image('rainbow_tile', './RainbowTile.png') // Change colors
+      this.load.image('nap_tile', './NapTile.png') // Gain a spoon; any color
       // nap --> gain a spoon?
       // TODO phone a friend --> collect nearby?
       // reset --> swap colors
 
       
       // Player
-      this.load.image('player', 'assets/Spoon_emphasis.png');
+      this.load.image('player', './Spoon_emphasis.png');
 
       // Text; 16:9 aspect ratio
       // Title
-      this.load.image('spoontxt', 'assets/Spoontxt.png')
-      this.load.image('theorytxt', 'assets/Theorytxt.png')
+      this.load.image('spoontxt', './Spoontxt.png')
+      this.load.image('theorytxt', './Theorytxt.png')
 
       // LOADING SOUNDS
       // --------------
       // test for selection
-      this.load.audio('click_sound', 'assets/sounds/click.mp3');
+      this.load.audio('click_sound', './sounds/click.mp3');
 
   }
 
