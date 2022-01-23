@@ -302,7 +302,7 @@ class GameScene extends Phaser.Scene {
       // LOADING SOUNDS
       // --------------
       // test for selection
-      this.load.audio('click_sound', './sounds/click.mp3');
+      this.load.audio('click_sound', './click.mp3');
 
   }
 
