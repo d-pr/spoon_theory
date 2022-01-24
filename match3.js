@@ -354,6 +354,11 @@
             Helpers for the PATH 
         ************************* */
 
+        resetPath(){
+            this.path = []
+            this.curr_enemy = -1;
+        }
+
         // Pops off the last entry in the path
         removeFromPath(){
         	this.path = this.path.pop();
