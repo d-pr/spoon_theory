@@ -215,6 +215,17 @@ class GameScene extends Phaser.Scene {
     this.spoon_txt = this.add.text(1080 - this.textBorderRight, this.textYRight, "Spoons: "  + this.matchX.getSpoons(), 
                                     {fontFamily: 'Verdana, Arial, Helvetica, sans-serif', fontSize: '20px' })//.setColor();
     this.spoon_txt.setColor('black')
+
+    // RULES
+
+    // TEMP
+    this.rules1 = this.add.text(1080/2 - 100, 750, "Go/Enter to Collect", 
+                                    {fontFamily: 'Verdana, Arial, Helvetica, sans-serif', fontSize: '18px' })//.setColor();
+    this.rules1.setColor('black')
+
+    this.rules2 = this.add.text(1080/2 -125, 775, "Undo/Backspace to Reset", 
+                                    {fontFamily: 'Verdana, Arial, Helvetica, sans-serif', fontSize: '18px' })//.setColor();
+    this.rules2.setColor('black')
     // GOALS
     // -----
     // Harcoded at 3 at the moment
@@ -299,6 +310,11 @@ class GameScene extends Phaser.Scene {
       this.load.image('spoontxt', './Spoontxt.png')
       this.load.image('theorytxt', './Theorytxt.png')
 
+
+      // BUTTONS
+      this.load.image('go_btn', './go_button.png');
+      this.load.image('undo_btn', './undo_button.png');
+
       // LOADING SOUNDS
       // --------------
       // test for selection
@@ -335,7 +351,7 @@ class GameScene extends Phaser.Scene {
 
   create ()
   {
-
+    console.log('in new scene')
     // ----------------------
     this.addTitle();
     // Initialize graphics
@@ -351,15 +367,25 @@ class GameScene extends Phaser.Scene {
     this.addGoals();
     // //this.add.image(100, 100, 'player');
 
+    // Add buttons
+    this.go_button = this.add.image(250,775, 'go_btn').setDisplaySize(240,160)
+    this.undo_button = this.add.image(820, 775, 'undo_btn').setDisplaySize(240,160)
+
+    this.go_button.setInteractive().on('pointerdown', () => this.removeTiles() )
+    this.undo_button.setInteractive().on('pointerdown', () => this.undoMove() )
+
+
     // // Handle player input
     this.input.on('pointerdown', this.selectTile, this); // Select a tile
     // // this.input.on('pointermove', this.drawPath, this);
     // //this.input.on('pointerup', this.removeTiles, this);
     this.input.keyboard.on('keydown_SPACE', this.removeTiles, this);
+    this.input.keyboard.on('keydown_BACKSPACE', this.undoMove, this);
+
   }
 
   // Check goals upon entering associated location
-  // SWAP TO STAR
+  // SWAP TO STAR TODO
   completeGoal(energy_type){
     // Check if they have enough energy
     if (energy_type == 'emotion'){ // Emotion
@@ -377,6 +403,12 @@ class GameScene extends Phaser.Scene {
 
   }
 
+
+  undoMove(){
+    this.matchX.resetPath();
+    this.graphics.clear();
+    this.updateUI();
+  }
 
   // Select tiles!
   selectTile(pointer){
@@ -524,8 +556,6 @@ class GameScene extends Phaser.Scene {
 
 } // END CLASS
 
-// export default GameScene;
-
 
   // // If we're making a path, draw it!
   // drawPath(pointer){
@@ -548,3 +578,5 @@ class GameScene extends Phaser.Scene {
   //     // Add check to see if it's already in path
   //   }
   // }
+
+
