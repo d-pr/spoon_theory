@@ -31,8 +31,8 @@
             // Either set default values, or...
             if (obj == undefined){
                 obj = {};
-                this.rows = 10;
-                this.cols = 16;
+                this.rows = 8; //10;
+                this.cols = 12; //16;
                 this.num_colors = 3;
                 this.player_pos = [Math.floor(Math.random() * this.rows), 
                                    Math.floor(Math.random() * this.cols)]// [this.rows - 1, this.cols -1]; // array of 2, [x, y]
@@ -68,6 +68,14 @@
             this.mentalCount = 0
 
             this.num_special_tiles = 2
+            // Tracks the number of 'extra turn' tiles on board to keep
+            // under limit of 2
+            this.num_extra_turn_tiles = 0
+
+            // track longest chains
+            this.longest_physical = 0
+            this.longest_mental = 0
+            this.longest_emotional = 0
 
             // Stores the values for the board - enemies etc
             // -1 = Empty
@@ -134,11 +142,22 @@
         // 20 mental goal
         // 21 emotional goal
         // 22 physical goal
+        // LIMIT NUMBER OF NAP TILES
         getRandomTile(){
             // Determine if regular or special tile - too many
-            if (Math.floor((Math.random() * 100)) > 95){ // Special tile, 5%?
-                console.log('special tile');
-                return (Math.floor((Math.random() * this.num_special_tiles)) + 10); // Special starts at 10
+            if (Math.floor((Math.random() * 100)) > 96){ // Special tile, 5%?
+                let tile_val = (Math.floor((Math.random() * this.num_special_tiles)) + 10);
+
+                // Check to see if there are already 2 nap tiles on board
+                if (tile_val == 11 && this.num_extra_turn_tiles >= 1){
+                    return 10 // eventually this should get one of the others instead; nap should be 10 probably
+                }
+                else if (tile_val == 11){
+                    this.num_extra_turn_tiles++
+                    return  tile_val// Special starts at 10
+                } else {
+                    return tile_val
+                }
             } else { // Regular tile
                 return Math.floor((Math.random() * this.num_colors) + 1); // Colors start at 1
             }
@@ -250,22 +269,13 @@
         // Removes tiles in path from board
         // Records the new values of various colors
         removeTiles(){
-            console.log('in remove tiles')
-            console.log(this.path)
-            console.log(this.path.length)
             let len = this.path.length;
             // Reset the current enemy
-            console.log('resetting current enemy')
             this.curr_enemy = -1;
             // Every tile in chain
             for (let i = 0; i < len; i++){
-                console.log('i is...')
-                console.log(i)
                 // Remove end of path
                 let coords = this.path.pop()
-                console.log('coords are...')
-                console.log(coords[0])
-                console.log(coords[1])
 
                 // Add resource based on the type
                 switch(this.getTileAt(coords[0], coords[1])){
@@ -281,17 +291,17 @@
                     // Special tiles
                     case 11: // Nap adds a spoon!
                         this.addSpoon();
+                        // Track how many
+                        this.num_extra_turn_tiles--;
                 }
 
                 // Set the tile to new value
                 if (i == 0){
-                    console.log('resetting player')
                     this.board_array[coords[0]][coords[1]] = 0 // For last tile, update player position!
                     this.board_array[this.player_pos[0]][this.player_pos[1]] = -1 // Empty previous spot
                     // Update player position
                     this.player_pos = [coords[0], coords[1]]
                 } else {
-                    console.log('resetting other')
                     this.board_array[coords[0]][coords[1]] = -1 // Otherwise set empty
                 }
 
@@ -378,11 +388,6 @@
 
         // Returns the position of the most recently selected enemy
         getLastSelection(){
-            console.log('in get last selection')
-            console.log(this.path)
-            console.log(this.path[0])
-            console.log(this.path[this.path.length - 1])
-            // console.log(type(this.path[this.path.length - 1]))
             let last_selection = this.path[this.path.length - 1] // [... xxx] this instead?
             return last_selection;
         }
@@ -447,9 +452,9 @@
         // If there's no enemy currently being matched, returns
         // true as well.
         checkMatch(row, col){
-            console.log('in check match')
-            console.log(this.board_array[row][col])
-            console.log(this.curr_enemy)
+            // console.log('in check match')
+            // console.log(this.board_array[row][col])
+            // console.log(this.curr_enemy)
             // Either matches current enemy, is a special column, or no current enemy
             // selected
             if (this.board_array[row][col] == this.curr_enemy || this.board_array[row][col] == 10 || this.board_array[row][col] == 11 ||
@@ -495,7 +500,6 @@
             }
             // Check to see if it matches
             if (!this.checkMatch(row, col)){
-                console.log('returning false')
                 return false;
             }
             // Check if it's already selected
@@ -509,7 +513,6 @@
                 last_pos = this.player_pos;
             } else {
                 last_pos = this.getLastSelection();
-                console.log(last_pos)
             }
 
             // Check to see if the new position is adjacent to current one			// row_new = row - 1, row + 1, row

@@ -19,21 +19,26 @@ class GameScene extends Phaser.Scene {
     this.goal_point_vals = []
     this.goal_points_remaining = []
 
+    // Hardcoded...... I hate that it's come to this
+    this.goals_complete = [false, false, false];
+
+
     // Constants for spacing
-    this.tileSpaceX = 50;
-    this.tileSpaceY = 50
+    this.tileSpaceX = 50;//50;
+    this.tileSpaceY = 50;//50
 
     // Border on left and top of screen, respectively
-    this.borderX = 135;
+    this.borderX = 150;
     this.borderY = 125
 
     // Constants for tile sizing
-    this.tileSizeX = 50;
-    this.tileSizeY = 50
+    this.tileSizeX = 65;//50;
+    this.tileSizeY = 65;//50
 
     // Color palette for line 
     // this.colors = []
-    this.colors = [0x84b83, 0x42bfdd,0xbbe6e4, 0xf0f6f6, 0xff66b3]
+    //this.colors = [0x84b83, 0x42bfdd,0xbbe6e4, 0xf0f6f6, 0xff66b3]
+    this.colors = [0x0FF00, 0xA020F0, 0xFFA500]
 
     // Constants for text
     // TRACKERS
@@ -51,7 +56,7 @@ class GameScene extends Phaser.Scene {
 
     // Colors for text
     this.mental_color = '#4A0688'
-    this.emotion_color = '#386B58'
+    this.emotion_color = 'green'
     this.physical_color = '#E55B24'
 
     // Add can take action, so you don't do stuff during animation
@@ -142,39 +147,139 @@ class GameScene extends Phaser.Scene {
     if (this.goal_types[goal_num] == 'physical'){
       goal_txt.setColor(this.physical_color)
     } else if (this.goal_types[goal_num] == 'emotional'){
-      goal_txt.setColor(this.emotional_color)
+      goal_txt.setColor('green')
     } else {
       goal_txt.setColor(this.mental_color)
     }
   }
 
+  // addGoal(goal_index){
+  //   console.log('adding text')
+  //   console.log((2 * goal_index * this.goalSpacingX))
+  //   let new_goal = this.add.text(((this.goalBorderLeft * (2 * goal_index * this.goalSpacingX))), this.goalTextY, this.goal_names[goal_index] + ": " +  this.goal_points_remaining[goal_index], 
+  //                                 {fontFamily: 'Verdana, Arial, Helvetica, sans-serif', fontSize: '20px' })
+  //   console.log(new_goal)
+  //   if (goal_index == 0){
+  //     new_goal.setColor(this.physical_color)
+  //   } else if (goal_index == 1) {
+  //     new_goal.setColor('green')
+  //   } else {
+  //     new_goal.setColor(this.mental_color)
+  //   }
+
+  //   this.addGoalColor(new_goal, goal_index)
+
+  //   this.goal_group.add(new_goal)
+  // }
+
+
+  // addSecondGoal(){
+  //   console.log('adding text')
+  //   let second_goal = this.add.text((this.goalBorderLeft * (2 * 2 * this.goalSpacingX)), this.goalTextY, this.goal_names[1] + ": " +  this.goal_points_remaining[0], 
+  //                                 {fontFamily: 'Verdana, Arial, Helvetica, sans-serif', fontSize: '20px' })
+  //   console.log(second_goal)
+
+  //   this.addGoalColor(second_goal, 1)
+
+  //   this.goal_group.add(second_goal)
+  // }
+
+
 
  // Add goal UI, etc
   addGoals(){
+    // Hardcoded, sadly
     this.goal_group = this.add.group()
+    this.win_sound = this.sound.add('win_sound')
+    if (this.goal_points_remaining[0] > 0){
+      this.first_goal = this.add.text(150, this.goalTextY, this.goal_names[0] + ": " +  this.goal_points_remaining[0], 
+                                  {fontFamily: 'badcomic', fontSize: '26px' })
+    } else {
+      if (this.goals_complete[0] == false){
+        this.win_sound.play()
+        this.goals_complete[0] = true
+      } 
+      this.first_goal = this.add.text(150, this.goalTextY, "COMPLETED", 
+                            {fontFamily: 'badcomic', fontSize: '26px' })
+    }
 
-    // Missing goal2 one...
-    this.goal1_txt =  this.add.text(this.goalBorderLeft, this.goalTextY, this.goal_names[0] + ": " +  this.goal_points_remaining[0], 
-                                  {fontFamily: 'Verdana, Arial, Helvetica, sans-serif', fontSize: '20px' })
+    if (this.goal_points_remaining[1] > 0){
+      this.second_goal = this.add.text(425, this.goalTextY, this.goal_names[1] + ": " +  this.goal_points_remaining[1], 
+                                  {fontFamily: 'badcomic', fontSize: '26px' })
+    } else {
+      if (this.goals_complete[1] == false){
+        this.win_sound.play()
+        this.goals_complete[1] = true
+      } 
+      this.second_goal = this.add.text(425, this.goalTextY, "COMPLETED", 
+                                  {fontFamily: 'badcomic', fontSize: '26px' })
+    }
 
-    this.goal2_txt = this.add.text(this.goalBorderLeft + 1*this.goalSpacingX, this.goalTextY, this.goal_names[1] + ": " +  this.goal_points_remaining[1], 
-                                  {fontFamily: 'Verdana, Arial, Helvetica, sans-serif', fontSize: '20px' })
+    if (this.goal_points_remaining[2] > 0){
+      this.third_goal = this.add.text(700, this.goalTextY, "Console Friend" + ": " +  this.goal_points_remaining[2], 
+                                  {fontFamily: 'badcomic', fontSize: '26px' })
+    } else {
+      if (this.goals_complete[2] == false){
+        this.win_sound.play()
+        this.goals_complete[2] = true
+      } 
+      this.third_goal = this.add.text(700, this.goalTextY, "COMPLETED", 
+                                  {fontFamily: 'badcomic', fontSize: '26px' })
+    }
 
-    this.goal3_txt = this.add.text(700/*this.goalBorderLeft + 2*this.goalSpacingX*/, this.goalTextY, this.goal_names[2] + ": " + this.goal_points_remaining[2], 
-                                  {fontFamily: 'Verdana, Arial, Helvetica, sans-serif', fontSize: '20px' })
 
-    this.goal_txt_list = [this.goal1_txt, this.goal2_txt, this.goal3_txt]
-    console.log('goal_txt_list')
-    console.log(this.goal_txt_list.length)
-    console.log(this.goal2_txt.text)
-    // Temp enumeration to test
-    this.addGoalColor(this.goal1_txt, 0)
-    this.addGoalColor(this.goal2_txt, 1)
-    this.addGoalColor(this.goal3_txt, 2)
+    this.addGoalColor(this.first_goal, 0)
+    this.addGoalColor(this.second_goal, 1)
+    this.third_goal.setColor('green')
 
-    this.goal_group.add(this.goal1_txt)
-    this.goal_group.add(this.goal2_txt)
-    this.goal_group.add(this.goal3_txt)
+
+
+    //this.addGoalColor(this.third_goal, 2)
+
+
+
+    this.goal_group.add(this.first_goal)
+    this.goal_group.add(this.second_goal)
+    this.goal_group.add(this.third_goal)
+    // this.goal_group.maxSize = 3
+    // // Add goals
+    // this.addGoal(0)
+    // this.addSecondGoal()
+    // this.addGoal(2)
+    // for (let i = 0; i < this.goal_list.length; i++){
+    //   console.log('adding goal')
+    //   this.addGoal(i)
+    // }
+    // console.log('goal group is...')
+    // console.log(this.goal_group.isFull())
+
+    // // Missing goal2 one...
+    // this.goal1_txt =  this.add.text(this.goalBorderLeft, this.goalTextY, this.goal_names[0] + ": " +  this.goal_points_remaining[0], 
+    //                               {fontFamily: 'Verdana, Arial, Helvetica, sans-serif', fontSize: '20px' })
+
+    // this.goal2_txt = this.add.text(this.goalBorderLeft + 2*this.goalSpacingX, this.goalTextY, this.goal_names[1] + ": " +  this.goal_points_remaining[1], 
+    //                               {fontFamily: 'Verdana, Arial, Helvetica, sans-serif', fontSize: '20px' })
+
+    // // this.goal3_txt = this.add.text(this.goalBorderLeft + 2*this.goalSpacingX, this.goalTextY, this.goal_names[2] + ": " + this.goal_points_remaining[2], 
+    // //                               {fontFamily: 'Verdana, Arial, Helvetica, sans-serif', fontSize: '20px' })
+    // this.final_goal_txt = this.add.text(this.goalBorderLeft + 4*this.goalSpacingX, this.goalTextY, this.goal_names[2] + ": " +  this.goal_points_remaining[1], 
+    //                               {fontFamily: 'Verdana, Arial, Helvetica, sans-serif', fontSize: '20px' })
+
+    //     // this.goal3_txt = this.add.text(this.goalBorderLeft + 3*this.goalSpacingX, this.goalTextY, this.goal_names[2] + ": " + this.goal_points_remaining[2], 
+    //     //                           {fontFamily: 'Verdana, Arial, Helvetica, sans-serif', fontSize: '20px' })
+
+    // // console.log('goal_txt_list')
+    // // console.log(this.goal_txt_list.length)
+    // // console.log(this.goal2_txt.text)
+    // // console.log(this.final_goal_txt.text)
+    // // // Temp enumeration to test
+    // // this.addGoalColor(this.goal1_txt, 0)
+    // // this.addGoalColor(this.goal2_txt, 1)
+    // // this.addGoalColor(this.final_goal_txt, 2)
+
+    // this.goal_group.add(this.goal1_txt)
+    // this.goal_group.add(this.goal2_txt)
+    // this.goal_group.add(this.final_goal_txt)
 
     // for (let i = 0; i < this.goal_txt_list.length; i++){
     //   this.addGoalColor(this.goal_txt_list[i], i)
@@ -185,13 +290,34 @@ class GameScene extends Phaser.Scene {
   }
 
 
+  drawSpoons(){
+    for (let i = 0; i < this.matchX.getSpoons(); i++){
+      this.ui_group.add(this.add.image(1080 - this.textBorderRight + 50,this.textYRight + 75 + i*(this.tileSizeX + 10), 'spoon').setDisplaySize(this.tileSizeX,this.tileSizeY))
+    }
+  }
+
+  checkAllComplete(){
+    for (let i = 0; i < this.goals_complete.length; i++){
+      if (this.goals_complete[i] == false){
+        return false
+      }
+    }
+    return true
+  }
+
+
+
   // has to run after get goal list!
   drawUI(){
+
     this.ui_group = this.add.group()
     // TRACKERS
     // --------------------------
     // Energy Trackers - each count
-    this.energy_txt = this.add.text(this.textBorderLeft, this.textYLeft, "Energy" , { fontFamily: 'Verdana, Arial, Helvetica, sans-serif', fontSize: '20px' });
+    this.energy_txt2 = this.add.text(this.textBorderLeft+2, this.textYLeft +2, "Energy" , { fontFamily: 'badcomic', fontSize: '24px' });
+    this.energy_txt2.setColor('grey')
+    this.energy_txt = this.add.text(this.textBorderLeft, this.textYLeft, "Energy" , { fontFamily: 'badcomic', fontSize: '24px' });
+
     this.phys_txt = this.add.text(this.textBorderLeft, (this.textYLeft + 2*this.textSpacing), "Physical: " + this.matchX.getPhysicalCount(), 
                                   {fontFamily: 'Verdana, Arial, Helvetica, sans-serif' })//.setColor(this.physical_color);
     this.mental_txt = this.add.text(this.textBorderLeft, (this.textYLeft + 3*this.textSpacing), "Mental: " + this.matchX.getMentalCount(), 
@@ -207,25 +333,41 @@ class GameScene extends Phaser.Scene {
 
     // Current Path Tracker - path size
     this.collect_txt = this.add.text(this.textBorderLeft, (this.textYLeft + 6*this.textSpacing), "Collecting: " + this.matchX.getPathSize(), 
-                                    {fontFamily: 'Verdana, Arial, Helvetica, sans-serif' })//.setColor();
+                                    {fontFamily: 'badcomic' })//.setColor();
 
     this.collect_txt.setColor('black')
-
+    this.spoon_txt2 = this.add.text(1080 - this.textBorderRight + 2, this.textYRight + 2, "Spoons", 
+                                    {fontFamily: 'badcomic', fontSize: '24px' })//.setColor();
+    this.spoon_txt2.setColor('grey')
     // Spoon Tracker - spooncount
-    this.spoon_txt = this.add.text(1080 - this.textBorderRight, this.textYRight, "Spoons: "  + this.matchX.getSpoons(), 
-                                    {fontFamily: 'Verdana, Arial, Helvetica, sans-serif', fontSize: '20px' })//.setColor();
+    this.spoon_txt = this.add.text(1080 - this.textBorderRight, this.textYRight, "Spoons", 
+                                    {fontFamily: 'badcomic', fontSize: '24px' })//.setColor();
     this.spoon_txt.setColor('black')
 
+    this.drawSpoons()
+
+
+
+
+
+    // this.fourth_goal = this.add.text(750, this.goalTextY, "Console Friend" + ": " +  this.goal_points_remaining[2], 
+    //                               {fontFamily: 'Verdana, Arial, Helvetica, sans-serif', fontSize: '20px' })
+    // this.addGoalColor(this.fourth_goal, 2)
+
+    // Goal Tracker - goalcount
+    // this.spoon_txt = this.add.text(1080 - this.textBorderRight, this.textYRight + 300, "Goals Completed: "  + this.matchX.getSpoons(), 
+    //                                 {fontFamily: 'Verdana, Arial, Helvetica, sans-serif', fontSize: '20px' })//.setColor();
+    // this.spoon_txt.setColor('black')
     // RULES
 
     // TEMP
-    this.rules1 = this.add.text(1080/2 - 100, 750, "Go/Enter to Collect", 
-                                    {fontFamily: 'Verdana, Arial, Helvetica, sans-serif', fontSize: '18px' })//.setColor();
-    this.rules1.setColor('black')
+    // this.rules1 = this.add.text(1080/2 - 100, 750, "Go/Enter to Collect", 
+    //                                 {fontFamily: 'Verdana, Arial, Helvetica, sans-serif', fontSize: '18px' })//.setColor();
+    // this.rules1.setColor('black')
 
-    this.rules2 = this.add.text(1080/2 -125, 775, "Undo/Backspace to Reset", 
-                                    {fontFamily: 'Verdana, Arial, Helvetica, sans-serif', fontSize: '18px' })//.setColor();
-    this.rules2.setColor('black')
+    // this.rules2 = this.add.text(1080/2 -125, 775, "Undo/Backspace to Reset", 
+    //                                 {fontFamily: 'Verdana, Arial, Helvetica, sans-serif', fontSize: '18px' })//.setColor();
+    // this.rules2.setColor('black')
     // GOALS
     // -----
     // Harcoded at 3 at the moment
@@ -238,6 +380,8 @@ class GameScene extends Phaser.Scene {
 
 
     this.ui_group.add(this.energy_txt)
+    this.ui_group.add(this.energy_txt2)
+
     this.ui_group.add(this.phys_txt)
     this.ui_group.add(this.mental_txt)
     this.ui_group.add(this.emotional_txt)
@@ -245,6 +389,7 @@ class GameScene extends Phaser.Scene {
     this.ui_group.add(this.collect_txt)
 
     this.ui_group.add(this.spoon_txt)
+    this.ui_group.add(this.spoon_txt2)
   } 
 
   updateUI(){
@@ -257,12 +402,9 @@ class GameScene extends Phaser.Scene {
     this.goal_group.clear(true, true)
     this.count_vals = [this.matchX.getPhysicalCount(), this.matchX.getMentalCount(), this.matchX.getEmotionalCount()]
     // always ordered physical - mental - emotional, as per goals.js class constructor/functions!
-    for (let i = 0; i < this.goal_list.length; i++)
+    for (let i = 0; i < this.goal_list.length; i++){
       this.goal_points_remaining[i] = this.goal_point_vals[i] - this.count_vals[i]
-
-    // this.goal1_txt.setText(String(this.goal_names[0] + ": " + this.goal_points_remaining[0]))
-    // this.goal2_txt.setText(String(this.goal_names[1] + ": " + this.goal_points_remaining[1]))
-    // this.goal3_txt.setText(String(this.goal_names[2] + ": " + this.goal_points_remaining[2]))
+    }
     this.addGoals();
   }
 
@@ -278,6 +420,8 @@ class GameScene extends Phaser.Scene {
   // init() {
     
   // };
+
+
 
   preload ()
   {
@@ -303,62 +447,112 @@ class GameScene extends Phaser.Scene {
 
       
       // Player
-      this.load.image('player', './Spoon_emphasis.png');
+      this.load.image('player', './Littleguy.png');
+
+      // Spoon
+      this.load.image('spoon', './Spoon_emphasis.png');
 
       // Text; 16:9 aspect ratio
       // Title
-      this.load.image('spoontxt', './Spoontxt.png')
-      this.load.image('theorytxt', './Theorytxt.png')
+      // this.load.image('spoontxt', './Spoontxt.png')
+      // this.load.image('theorytxt', './Theorytxt.png')
+      this.load.image('spoontxt', './Spoonnew.png')
+      this.load.image('theorytxt', './Theorynew.png')
 
 
       // BUTTONS
       this.load.image('go_btn', './go_button.png');
       this.load.image('undo_btn', './undo_button.png');
 
+      // Game over text
+      this.load.image('ohno', './Ohno.png')
+      this.load.image('congrats', './congratulations.png')
+
       // LOADING SOUNDS
       // --------------
       // test for selection
       this.load.audio('click_sound', './click.mp3');
+
+      this.load.audio('select_sound', './soft_click.mp3')
+      this.load.audio('win_sound', './win_sound.mp3')
 
   }
 
   initializeGoals(){
     this.goals.generateGoals();
     this.goal_list = this.goals.getGoalList()
-    console.log(this.goal_list)
-    console.log(this.goal_list[0].name)
+
 
 
     // Update associated variables
-    for (let i = 0; i < this.goal_list.length; i++){
-      console.log(i)
+    for (let i = 0; i < 3; i++){
       this.goal_points_remaining.push(this.goal_list[i].points)
       this.goal_point_vals.push(this.goal_list[i].points)
       this.goal_names.push(this.goal_list[i].name)
       this.goal_types.push(this.goal_list[i].type)
     }
-    console.log(this.goal_points_remaining)
-    console.log(this.goal_names)
-    console.log(this.goal_types)
+
 
   }
 
   addTitle(){
-    this.add.image()
-    this.add.image(425, 60, 'spoontxt').setDisplaySize(240,135)// 16*15
-    this.add.image(675, 60, 'theorytxt').setDisplaySize(240,135)
+    this.title = this.add.text(273, 23, "Spoon Theory" , { fontFamily: 'badcomic', fontSize: '80px', fontStyle: 'bold'})
+    this.title.setColor('grey')
+    this.title = this.add.text(270, 20, "Spoon Theory" , { fontFamily: 'badcomic', fontSize: '80px', fontStyle: 'bold'})
+    this.title.setColor('black')
+
+    // this.add.image()
+    // this.add.image(400, 60, 'spoontxt').setDisplaySize(240,160)// 16*15
+    // this.add.image(650, 60, 'theorytxt').setDisplaySize(240,160)
+  }
+
+
+  loadRules ()
+  {
+      // let link_sound = this.sound.add('click_sound')
+      // link_sound.play()
+
+      var url = 'https://docs.google.com/document/d/1fKsGwYSWxpJx5TiOxiBLEXRsW5fxgR1KIeH4Rrd37HA/edit?usp=sharing'
+
+      var s = window.open(url, '_blank');
+
+      if (s && s.focus)
+      {
+          s.focus();
+      }
+      else if (!s)
+      {
+          window.location.href = url;
+      }
+  }
+
+  loadArticle ()
+  {
+      // let link_sound = this.sound.add('click_sound')
+      // link_sound.play()
+
+      var url = 'https://butyoudontlooksick.com/articles/written-by-christine/the-spoon-theory/'
+
+      var s = window.open(url, '_blank');
+
+      if (s && s.focus)
+      {
+          s.focus();
+      }
+      else if (!s)
+      {
+          window.location.href = url;
+      }
   }
 
   create ()
   {
-    console.log('in new scene')
     // ----------------------
     this.addTitle();
     // Initialize graphics
     this.graphics = this.add.graphics()
     // Generate goals
     this.initializeGoals();
-    console.log(this.goal_list)
     // Fill board with tiles
     this.matchX.fillBoard()
     // Draw tiles and UI
@@ -368,11 +562,24 @@ class GameScene extends Phaser.Scene {
     // //this.add.image(100, 100, 'player');
 
     // Add buttons
-    this.go_button = this.add.image(250,775, 'go_btn').setDisplaySize(240,160)
-    this.undo_button = this.add.image(820, 775, 'undo_btn').setDisplaySize(240,160)
+    this.go_button = this.add.image(820,775, 'go_btn').setDisplaySize(240,160)
+    this.undo_button = this.add.image(250, 775, 'undo_btn').setDisplaySize(240,160)
 
     this.go_button.setInteractive().on('pointerdown', () => this.removeTiles() )
     this.undo_button.setInteractive().on('pointerdown', () => this.undoMove() )
+
+
+    this.graphics.fillStyle(0x000000, 1)
+    this.graphics.fillRoundedRect(42, 47, 106,56, 9)
+    this.graphics.fillStyle(0xf2f2f2, 1)
+    this.graphics.fillRoundedRect(45, 50, 100,50, 8)
+
+    this.rules_button = this.add.text(50, 50, "Rules", 
+              {fontFamily: 'badcomic', fontSize: '36px' }).setColor('dark grey')
+
+
+
+    this.rules_button.setInteractive().on('pointerdown', () => this.loadRules() )
 
 
     // // Handle player input
@@ -384,27 +591,29 @@ class GameScene extends Phaser.Scene {
 
   }
 
-  // Check goals upon entering associated location
-  // SWAP TO STAR TODO
-  completeGoal(energy_type){
-    // Check if they have enough energy
-    if (energy_type == 'emotion'){ // Emotion
+  // // Check goals upon entering associated location
+  // // SWAP TO STAR TODO
+  // completeGoal(energy_type){
+  //   // Check if they have enough energy
+  //   if (energy_type == 'emotion'){ // Emotion
       
-    } else if (energy_type == 'mental'){ // Mental
+  //   } else if (energy_type == 'mental'){ // Mental
 
-    } else { // Physical
+  //   } else { // Physical
 
-    }
+  //   }
 
-    // ????
+  //   // ????
 
-    // Add abilities associated with the types of energy?
+  //   // Add abilities associated with the types of energy?
 
 
-  }
+  // }
 
 
   undoMove(){
+    this.undo_sound = this.sound.add('click_sound')
+    this.undo_sound.play()
     this.matchX.resetPath();
     this.graphics.clear();
     this.updateUI();
@@ -413,10 +622,9 @@ class GameScene extends Phaser.Scene {
   // Select tiles!
   selectTile(pointer){
     // Creating sound variables
-    this.click = this.sound.add('click_sound')
+    this.select = this.sound.add('select_sound')
     // Check if valid to make a move at all
     if (this.matchX.getSpoons() > 0){
-      console.log('in selectTile');
       let row = Math.floor((pointer.y - this.borderY)/this.tileSizeY);
       let col = Math.floor((pointer.x - this.borderX)/this.tileSizeX);
       //Check for deselect - TODO
@@ -429,11 +637,9 @@ class GameScene extends Phaser.Scene {
       //   this.updateCollecting();
       // }
       if (this.matchX.checkIfValid(row, col)){
-        console.log('valid')
-        this.click.play();
+        this.select.play();
         // CAN ADD TWICE 
         this.matchX.addToPath(row, col);
-        console.log(this.matchX.getPathSize())
         // Draw new path
         this.drawPath();
         this.updateCollecting();
@@ -442,11 +648,84 @@ class GameScene extends Phaser.Scene {
     }
   }
 
+  drawWinPopup(){
+    this.graphics.clear()
+    // dark green border
+    this.graphics.fillStyle(0x013220, 1)
+    this.graphics.fillRoundedRect(250, 200, 610,410, 32)
+
+    this.graphics.fillStyle(0xFFFFFF, 1)
+    this.graphics.fillRoundedRect(250, 200, 600,400, 32)
+
+    // Add win text
+    let line1 = this.add.text(395, 450, "You did everything!", 
+                  {fontFamily: 'badcomic', fontSize: '36px' }).setColor(0x8B0000)
+    line1.setDepth(2)
+
+    let line2 = this.add.text(430, 500, "Now do it again tomorrow.", 
+              {fontFamily: 'badcomic', fontSize: '20px' }).setColor(0xFFFFFF)
+    line2.setDepth(2)
+
+    let congrats = this.add.image(530, 350, 'congrats').setDisplaySize(500, 300)
+    congrats.setDepth(2)
+
+    let article_button = this.add.text(390, 550, "Learn more about spoon theory here.", 
+          {fontFamily: 'badcomic', fontSize: '20px' }).setColor('blue')
+
+    article_button.setDepth(2)
+
+    article_button.setInteractive().on('pointerdown', () => this.loadArticle() )
+
+  }
+
+  drawLossPopup(){
+    this.graphics.clear()
+    this.graphics.fillStyle(0x8B0000, 1)
+    this.graphics.fillRoundedRect(250, 200, 610,410, 32)
+
+    this.graphics.fillStyle(0xFFFFFF, 1)
+    this.graphics.fillRoundedRect(250, 200, 600,400, 32)
+
+    // Add loss text
+
+    let line1 = this.add.text(380, 400, "You ran out of spoons.", 
+                  {fontFamily: 'badcomic', fontSize: '36px' }).setColor(0x8B0000)
+    line1.setDepth(2)
+
+    let line2 = this.add.text(465, 450, "Refresh to try again!", 
+              {fontFamily: 'badcomic', fontSize: '20px' }).setColor(0xFFFFFF)
+    line2.setDepth(2)
+
+    let ohno = this.add.image(530, 350, 'ohno').setDisplaySize(500, 300)
+    ohno.setDepth(2)
+
+    let article_button = this.add.text(390, 500, "Learn more about spoon theory here.", 
+          {fontFamily: 'badcomic', fontSize: '20px' }).setColor('blue')
+    article_button.setDepth(2)
+
+    article_button.setInteractive().on('pointerdown', () => this.loadArticle() )
+  }
+
+    // called in removetiles
+ // won --> true or false for lost
+  drawEndGameScreen(won){
+    if (won == true){
+      this.drawWinPopup()
+    } else {
+      this.drawLossPopup()
+    }
+  }
+
+
+
+
 
   removeTiles(){
     if (this.matchX.checkPathEmpty()){
       return;
     }
+    this.remove_sound = this.sound.add('click_sound')
+    this.remove_sound.play()
     this.graphics.clear();
     // Use up a spoon
     this.matchX.removeSpoon();
@@ -464,12 +743,18 @@ class GameScene extends Phaser.Scene {
     // Redraw the board
     this.drawTiles();
     this.updateUI();
+    if (this.checkAllComplete()){
+      // win
+      this.drawEndGameScreen(true)
+    } else if (this.matchX.getSpoons() == 0){
+      this.drawEndGameScreen(false)
+    }
   }
 
 
-  update() {
-    //this.drawPath();
-  }
+  // update() {
+  //   //this.drawPath();
+  // }
 
   // Helpers to go from row/column to coordinates
   rowToCoord(row){
@@ -488,13 +773,23 @@ class GameScene extends Phaser.Scene {
     return arr
   }
 
+  getPathColor(num, i){
+    if (num == 2){
+      return 0x0FF00
+    } else if (num == 1) {
+      return 0xA020F0
+    } else if (num == 3) {
+      return 0xFFA500
+    } else {
+      return this.colors[i % this.colors.length]
+    }
+  }
+
   //Draw lines along path
   drawPath(){
     if (this.matchX.checkPathEmpty()){
       return;
     }
-    console.log('begin of draw path player last')
-    console.log(this.matchX.getLastSelection());
 
     this.graphics.clear()
     // Current and start location in row,col
@@ -506,8 +801,7 @@ class GameScene extends Phaser.Scene {
 
     // Draw lines between each point
     for (let i = 0; i < this.matchX.getPathSize(); i++){
-      console.log('i is')
-      console.log(i)
+
       curr = this.matchX.getNthPathPos(i); // Get current location
       curr_coords = this.convertToCoord(curr)
 
@@ -516,7 +810,9 @@ class GameScene extends Phaser.Scene {
 
       this.graphics.moveTo(prev_coords[1], prev_coords[0])
       // Color line
-      this.graphics.lineStyle(this.getLineWidth(i), this.colors[i % this.colors.length])
+      let curr_selected = this.matchX.getEnemyNum()
+      let curr_color = this.getPathColor(curr_selected, i)
+      this.graphics.lineStyle(this.getLineWidth(i), curr_color) //this.colors[i % this.colors.length])
       this.graphics.lineTo(curr_coords[1], curr_coords[0])
 
       prev = curr
@@ -524,7 +820,6 @@ class GameScene extends Phaser.Scene {
       this.graphics.setDepth(2)
       this.graphics.strokePath();
     } // End for loop
-    console.log('out of for loop')
     this.addCircles();
   }
 
@@ -534,11 +829,13 @@ class GameScene extends Phaser.Scene {
 
     // Add circles!
     for (let i = 0; i < this.matchX.getPathSize(); i++){
-      console.log('i is')
-      console.log(i)
+
       curr = this.matchX.getNthPathPos(i); // Get current location
       curr_coords = this.convertToCoord(curr)
-      this.graphics.fillStyle(this.colors[i % this.colors.length])
+      let curr_selected = this.matchX.getEnemyNum()
+      let curr_color = this.getPathColor(curr_selected, i)
+
+      this.graphics.fillStyle(curr_color) //this.colors[i % this.colors.length])
       this.graphics.fillCircle(curr_coords[1], curr_coords[0], this.getLineWidth(i))
     } // End for loop
   }
